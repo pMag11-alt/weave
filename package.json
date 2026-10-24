@@ -11,11 +11,11 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "npm run build && node dist/server/main.js",
+    "start": "npm run build && node dist/src/server/main.js",
     "test": "npm run build && node --test --test-timeout=30000 dist/test/*.test.js",
     "bench": "npm run build && node dist/bench/trace.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "site": "npm run build && node dist/server/build-site.js"
+    "site": "npm run build && node dist/src/server/build-site.js"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
