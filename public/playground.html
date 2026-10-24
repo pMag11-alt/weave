@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>weave playground</title>
+    <meta name="description" content="Three simulated peers editing one document through a CRDT, with adjustable latency, offline mode and a live view of the Fugue tree." />
+    <link rel="icon" href="favicon.svg" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="playground">
+      <header>
+        <a class="brand" href="https://github.com/pMag11-alt/weave">weave</a>
+        <h1>CRDT playground</h1>
+        <p>
+          Three peers (Ann, Ben and Cy) share one document. Each has its own copy and its own <a href="#how">Fugue CRDT</a>, and
+          they exchange operations over a simulated network. Type in any of the boxes, make the network slow, or take someone
+          offline and edit on both sides. When everyone reconnects, every copy converges to the same text.
+        </p>
+      </header>
+
+      <div class="controls" role="group" aria-label="Network">
+        <label>Latency <input id="latency" type="range" min="0" max="2000" step="50" value="400" /> <span id="latency-value">400 ms</span></label>
+        <label><input id="jitter" type="checkbox" checked /> Reorder messages</label>
+        <button id="demo-typing" type="button">Demo: typing at the same spot</button>
+        <button id="demo-delete" type="button">Demo: delete vs. insert</button>
+        <button id="reset" type="button">Reset</button>
+        <span id="converged" class="converged" data-state="ok" aria-live="polite"></span>
+      </div>
+
+      <div id="peers" class="peers"></div>
+      <p id="caption" class="caption" aria-live="polite"></p>
+
+      <section class="tree-panel">
+        <h2>Inside the CRDT</h2>
+        <p class="hint">
+          The Fugue tree in <select id="tree-peer" aria-label="Whose copy to show"></select>'s copy. Reading the nodes left to right gives
+          the text. Every character is a <span style="color: var(--left-edge)">left</span> or
+          <span style="color: var(--right-edge)">right</span> child of another one. Deleted characters stay behind as faded tombstones,
+          so edits made concurrently still have something to attach to. Ring colours show who typed each character.
+        </p>
+        <div class="legend">
+          <span><i style="color: var(--left-edge)"></i>left child</span>
+          <span><i style="color: var(--right-edge)"></i>right child</span>
+          <span id="tree-size"></span>
+        </div>
+        <div class="tree-scroll"><svg id="tree" role="img" aria-label="Fugue tree"></svg></div>
+      </section>
+
+      <div class="explain" id="how">
+        <section>
+          <h3>Why not just send "insert 'x' at index 5"?</h3>
+          <p>
+            Indexes go stale. If Ben deletes the first word while Ann's "insert at 5" is still in flight, position 5 now means
+            something else. A CRDT gives every character a permanent id, and expresses edits relative to ids instead of positions.
+          </p>
+        </section>
+        <section>
+          <h3>How Fugue orders characters</h3>
+          <p>
+            A new character becomes the right child of the character before it. If that one already has right children, the new
+            character becomes the left child of the next character instead. The document is the tree's in-order traversal.
+            Siblings are sorted by id, so every peer builds the same tree no matter what order operations arrive in.
+          </p>
+        </section>
+        <section>
+          <h3>Why words don't get shuffled</h3>
+          <p>
+            When you type a word, each letter is the right child of the one before it, so the word forms one branch. Two people
+            typing at the same spot create two sibling branches, and an in-order traversal reads each branch whole. Try
+            "Demo: typing at the same spot" above.
+          </p>
+        </section>
+        <section>
+          <h3>Offline and out of order</h3>
+          <p>
+            Each peer tracks a version vector: the last operation it has from every peer. On reconnect, peers swap version
+            vectors and send exactly what the other side is missing. An operation that arrives before its parent character
+            waits in a buffer (shown as "buffered" under each box).
+          </p>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="js/client/playground.js"></script>
+  </body>
+</html>

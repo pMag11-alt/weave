@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>weave</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <a class="brand" href="/">weave</a>
+        <span class="room">#<span id="room"></span></span>
+        <span id="status" class="status" data-state="connecting">connecting…</span>
+        <span class="spacer"></span>
+        <span id="people" class="people" aria-label="People in this room"></span>
+        <label class="name">You are <input id="name" maxlength="40" aria-label="Your name" /></label>
+        <button id="share" type="button">Copy link</button>
+      </header>
+      <main class="editor-wrap">
+        <div class="editor-box">
+          <textarea
+            id="text"
+            spellcheck="false"
+            aria-label="Shared document"
+            placeholder="Start typing. Open this page in another window to edit together."
+          ></textarea>
+        </div>
+      </main>
+      <footer class="statusbar">
+        <span id="stats"></span>
+        <a href="/playground">How does this work?</a>
+      </footer>
+    </div>
+    <script type="module" src="/js/client/editor-page.js"></script>
+  </body>
+</html>

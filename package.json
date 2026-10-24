@@ -1,0 +1,24 @@
+{
+  "name": "weave",
+  "version": "0.1.0",
+  "description": "Real-time collaborative text editing on a from-scratch CRDT (Fugue), with a zero-dependency WebSocket server",
+  "type": "module",
+  "license": "MIT",
+  "author": "pMag11-alt",
+  "repository": "github:pMag11-alt/weave",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "npm run build && node dist/server/main.js",
+    "test": "npm run build && node --test --test-timeout=30000 dist/test/",
+    "bench": "npm run build && node dist/bench/trace.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "site": "npm run build && node dist/server/build-site.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>weave</title>
+    <meta name="description" content="Real-time collaborative text editing on a CRDT built from scratch." />
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main class="landing">
+      <a class="brand" href="/">weave</a>
+      <h1>Edit text together, in real time, even offline.</h1>
+      <p class="lede">
+        weave is a collaborative editor built on <strong>Fugue</strong>, a text CRDT. Every keystroke becomes an operation that
+        merges cleanly with everyone else's, in any order and without a central lock. Disconnect, keep typing, reconnect, and
+        everything converges.
+      </p>
+      <form class="join" id="join">
+        <input id="room" aria-label="Room name" placeholder="room name" pattern="[A-Za-z0-9_-]{1,64}" required />
+        <button class="primary" type="submit">Open room</button>
+        <button type="button" id="new">New random room</button>
+      </form>
+      <p class="lede" style="font-size: 15px">Open the same room in two windows (or on two devices) and type in both.</p>
+      <div class="cards">
+        <div class="card">
+          <h3>Try the playground</h3>
+          <p>Three simulated peers, adjustable latency and an offline switch, plus a live view of the CRDT tree. <a href="/playground">Open it →</a></p>
+        </div>
+        <div class="card">
+          <h3>No interleaving</h3>
+          <p>When two people type at the same spot at the same time, their words stay intact instead of being shuffled together letter by letter.</p>
+        </div>
+        <div class="card">
+          <h3>Zero dependencies</h3>
+          <p>The CRDT, the WebSocket protocol and the server are written from scratch in TypeScript on Node's standard library.</p>
+        </div>
+      </div>
+    </main>
+    <script type="module">
+      const words = ["amber", "birch", "cedar", "delta", "ember", "fjord", "harbor", "indigo", "juniper", "maple", "nova", "orbit"];
+      const random = () => `${words[Math.floor(Math.random() * words.length)]}-${Math.floor(Math.random() * 900 + 100)}`;
+      const input = document.getElementById("room");
+      input.value = random();
+      document.getElementById("join").addEventListener("submit", (e) => {
+        e.preventDefault();
+        location.href = `/r/${encodeURIComponent(input.value.trim())}`;
+      });
+      document.getElementById("new").addEventListener("click", () => (location.href = `/r/${random()}`));
+    </script>
+  </body>
+</html>

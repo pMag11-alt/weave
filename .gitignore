@@ -1,0 +1,7 @@
+node_modules/
+dist/
+site/
+data/
+.DS_Store
+.vscode/
+.idea/
